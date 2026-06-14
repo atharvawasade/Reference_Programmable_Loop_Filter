@@ -1,0 +1,340 @@
+<style>
+:root {
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f8fafc;
+  --color-background-tertiary: #f1f5f9;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #64748b;
+  --color-border-secondary: #cbd5e1;
+  --color-border-tertiary: #e2e8f0;
+  --color-background-danger: #fef2f2;
+  --color-border-danger: #fca5a5;
+  --color-text-danger: #b91c1c;
+  --color-background-warning: #fffbeb;
+  --color-border-warning: #fde68a;
+  --color-text-warning: #b45309;
+  --theme-primary: #1E293B; /* Slate 800 */
+  --theme-accent: #2563EB;  /* Blue 600 */
+  --theme-accent-hover: #1D4ED8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+.ti-hdr { background: var(--theme-primary); color: #fff; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; border-radius: 8px 8px 0 0; }
+.ti-hdr .logo { font-size: 11px; font-weight: 700; letter-spacing: .08em; }
+.ti-hdr .logo b { font-size: 17px; margin-right: 4px; }
+.ti-hdr .ttl { font-size: 13px; font-weight: 600; }
+
+.wrap { background: var(--color-background-primary); border: 1px solid var(--color-border-tertiary); border-top: none; border-radius: 0 0 8px 8px; padding: 20px 20px 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+
+.sec { font-size: 11px; font-weight: 700; color: var(--theme-primary); text-transform: uppercase; letter-spacing: .05em; border-bottom: 2px solid var(--color-border-tertiary); padding-bottom: 6px; margin: 20px 0 12px; }
+.sec:first-of-type { margin-top: 0; }
+
+.igrid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.igrid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+
+.field label { display: block; font-size: 10px; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .04em; }
+.frow { display: flex; border: 1px solid var(--color-border-secondary); border-radius: 6px; overflow: hidden; background: var(--color-background-primary); transition: border-color 0.2s; }
+.frow:focus-within { border-color: var(--theme-accent); }
+.frow input { flex: 1; border: none; outline: none; padding: 8px 10px; font-size: 13px; font-family: inherit; color: var(--color-text-primary); background: transparent; min-width: 0; }
+.frow select { border: none; border-left: 1px solid var(--color-border-secondary); outline: none; padding: 8px 8px; font-size: 12px; background: var(--color-background-secondary); color: var(--color-text-primary); cursor: pointer; font-family: inherit; }
+.frow input:disabled { color: var(--color-text-tertiary); cursor: not-allowed; }
+
+.pm-toggle { display: flex; gap: 0; margin-bottom: 12px; border: 1px solid var(--color-border-secondary); border-radius: 6px; overflow: hidden; width: fit-content; }
+.pm-toggle button { padding: 8px 20px; font-size: 12px; font-weight: 600; border: none; cursor: pointer; background: var(--color-background-secondary); color: var(--color-text-secondary); transition: background .15s, color .15s; }
+.pm-toggle button.active { background: var(--theme-accent); color: #fff; }
+.pm-toggle button:not(:last-child) { border-right: 1px solid var(--color-border-secondary); }
+
+.pm-slider-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--color-background-secondary); border-radius: 6px; border: 1px solid var(--color-border-tertiary); margin-bottom: 10px; }
+.pm-slider-row label { font-size: 12px; font-weight: 600; color: var(--color-text-secondary); white-space: nowrap; min-width: 100px; }
+.pm-slider-row input[type=range] { flex: 1; accent-color: var(--theme-accent); }
+.pm-val { font-size: 14px; font-weight: 700; color: var(--theme-accent); min-width: 46px; text-align: right; }
+
+.ab-display { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; font-size: 12px; }
+.ab-chip { background: var(--color-background-secondary); border: 1px solid var(--color-border-tertiary); border-radius: 6px; padding: 8px 12px; text-align: center; }
+.ab-chip .ab-lbl { color: var(--color-text-secondary); font-size: 10px; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+.ab-chip .ab-num { font-weight: 700; color: var(--color-text-primary); font-family: 'Courier New', monospace; font-size: 14px; }
+.ab-chip.highlight .ab-num { color: var(--theme-accent); }
+
+.btn { width: 100%; padding: 12px; background: var(--theme-accent); color: #fff; font-size: 13px; font-weight: 600; letter-spacing: .05em; border: none; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 16px; transition: background 0.2s; }
+.btn:hover { background: var(--theme-accent-hover); }
+
+.cgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 8px; }
+.cc { border: 1px solid var(--color-border-tertiary); border-radius: 6px; padding: 12px; background: var(--color-background-secondary); border-top: 3px solid var(--theme-primary); }
+.cc .sym { font-size: 10px; font-weight: 700; color: var(--theme-primary); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+.cc .val { font-size: 17px; font-weight: 700; color: var(--color-text-primary); font-family: 'Courier New', monospace; }
+.cc .apx { font-size: 11px; color: var(--color-text-tertiary); margin-top: 4px; }
+
+.ctbl { width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 12px; border: 1px solid var(--color-border-tertiary); border-radius: 6px; overflow: hidden; display: table; }
+.ctbl th { background: var(--color-background-secondary); color: var(--color-text-secondary); padding: 8px 12px; text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--color-border-tertiary); }
+.ctbl td { padding: 8px 12px; border-bottom: 1px solid var(--color-border-tertiary); vertical-align: middle; }
+.ctbl tr:last-child td { border-bottom: none; }
+.cmono { font-family: 'Courier New', monospace; font-size: 12px; font-weight: 700; letter-spacing: .09em; color: var(--color-text-primary); word-break: break-all; }
+.cnote { font-size: 10px; color: var(--color-text-tertiary); margin-top: 2px; }
+
+.sgrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 8px; }
+.sc { border: 1px solid var(--color-border-tertiary); border-radius: 6px; overflow: hidden; }
+.sh { background: var(--color-background-secondary); color: var(--theme-primary); padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--color-border-tertiary); }
+.sh .sn { font-size: 12px; font-weight: 700; } 
+.sh .sr { font-size: 9px; opacity: .8; font-weight: 600; }
+.sb { padding: 8px 10px; background: var(--color-background-primary); }
+.sbits { display: flex; gap: 4px; margin-bottom: 4px; }
+.bit { width: 22px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; font-family: 'Courier New', monospace; }
+.b1 { background: var(--theme-accent); color: #fff; }
+.b0 { background: var(--color-background-tertiary); color: var(--color-text-secondary); border: 1px solid var(--color-border-secondary); }
+.slbl { font-size: 10px; color: var(--color-text-tertiary); }
+
+.seld { background: var(--color-background-primary); border: 1px solid var(--color-border-tertiary); border-radius: 6px; padding: 12px; margin-bottom: 8px; }
+.selrow { display: grid; grid-template-columns: 90px 1fr 130px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--color-border-tertiary); gap: 10px; }
+.selrow:last-child { border-bottom: none; padding-bottom: 0; }
+.sellbl { font-weight: 600; color: var(--color-text-secondary); font-size: 11px; }
+.selbw { display: flex; flex-wrap: wrap; gap: 3px; }
+.sbit { width: 16px; height: 16px; border-radius: 3px; font-size: 9px; font-weight: 700; font-family: monospace; display: flex; align-items: center; justify-content: center; }
+.sb1 { background: var(--theme-accent); color: #fff; }
+.sb0 { background: var(--color-background-tertiary); color: var(--color-text-tertiary); border: 1px solid var(--color-border-tertiary); }
+.selrng { font-size: 10px; color: var(--color-text-tertiary); text-align: right; }
+
+.err { background: var(--color-background-danger); border: 1px solid var(--color-border-danger); border-radius: 6px; padding: 10px 14px; color: var(--color-text-danger); font-weight: 600; font-size: 12px; margin: 12px 0; display: none; }
+.res { display: none; }
+.tiftr { background: var(--color-background-secondary); border-top: 1px solid var(--color-border-tertiary); border-radius: 0 0 6px 6px; padding: 10px 16px; font-size: 10px; color: var(--color-text-tertiary); text-align: center; margin: 16px -20px -24px; }
+.warn { background: var(--color-background-warning); border: 1px solid var(--color-border-warning); border-radius: 6px; padding: 8px 12px; color: var(--color-text-warning); font-size: 11px; margin-bottom: 10px; display: none; }
+</style>
+
+<div class="ti-hdr">
+  <div class="logo"><b>TI</b> TEXAS INSTRUMENTS</div>
+  <div class="ttl">PLL Loop Filter — Switch Configuration</div>
+</div>
+<div class="wrap">
+
+  <div class="sec">PLL Parameters</div>
+  <div class="igrid">
+    <div class="field">
+      <label>Loop BW F<sub>c</sub></label>
+      <div class="frow">
+        <input type="number" id="fc_v" value="100" min="0.001" step="any">
+        <select id="fc_u"><option value="1e3">kHz</option><option value="1e6">MHz</option><option value="1">Hz</option></select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Divider Ratio N</label>
+      <div class="frow"><input type="number" id="nv" value="10" min="1" step="1"></div>
+    </div>
+    <div class="field">
+      <label>Charge Pump I<sub>cp</sub></label>
+      <div class="frow">
+        <input type="number" id="icp_v" value="1" min="0.001" step="any">
+        <select id="icp_u"><option value="1e-3">mA</option><option value="1e-6">µA</option><option value="1">A</option></select>
+      </div>
+    </div>
+    <div class="field">
+      <label>K<sub>vco</sub></label>
+      <div class="frow">
+        <input type="number" id="kv_v" value="60" min="0.001" step="any">
+        <select id="kv_u"><option value="1e6">MHz/V</option><option value="1e3">kHz/V</option><option value="1e9">GHz/V</option></select>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">Phase Margin</div>
+  <div class="pm-toggle">
+    <button class="active" id="btn-nc" onclick="setPMMode('nc')">Don't care</button>
+    <button id="btn-pm" onclick="setPMMode('pm')">Set target PM</button>
+  </div>
+
+  <div id="pm-controls" style="display:none">
+    <div class="pm-slider-row">
+      <label>Target PM</label>
+      <input type="range" id="pm-slider" min="55" max="85" value="62" step="0.5" oninput="onPMSlider()">
+      <span class="pm-val" id="pm-disp">62.0°</span>
+    </div>
+    <div class="warn" id="pm-warn"></div>
+    <div class="ab-display">
+      <div class="ab-chip highlight">
+        <div class="ab-lbl">α (alpha)</div>
+        <div class="ab-num" id="ab-alpha">5.000</div>
+      </div>
+      <div class="ab-chip highlight">
+        <div class="ab-lbl">β (beta)</div>
+        <div class="ab-num" id="ab-beta">3.000</div>
+      </div>
+      <div class="ab-chip">
+        <div class="ab-lbl">Actual PM</div>
+        <div class="ab-num" id="ab-pm">61.9°</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="nc-info" style="margin-bottom:8px">
+    <div class="ab-display">
+      <div class="ab-chip highlight"><div class="ab-lbl">α (alpha)</div><div class="ab-num">5.000</div></div>
+      <div class="ab-chip highlight"><div class="ab-lbl">β (beta)</div><div class="ab-num">3.000</div></div>
+      <div class="ab-chip"><div class="ab-lbl">PM (default)</div><div class="ab-num">61.9°</div></div>
+    </div>
+  </div>
+
+  <button class="btn" onclick="calc()">Calculate Switch Settings</button>
+
+  <div class="err" id="err"></div>
+  
+  <div class="res" id="res">
+
+    <div class="sec">DIP Switch Settings</div>
+    <div class="sgrid" id="swg"></div>
+
+    <div class="sec">Computed Component Values</div>
+    <div class="cgrid">
+      <div class="cc"><div class="sym">Rs — Series R</div><div class="val" id="rv">—</div><div class="apx" id="ra"></div></div>
+      <div class="cc"><div class="sym">Cs — Series C</div><div class="val" id="csv">—</div><div class="apx" id="csa"></div></div>
+      <div class="cc"><div class="sym">Cp — Parallel C</div><div class="val" id="cpv">—</div><div class="apx" id="cpa"></div></div>
+    </div>
+
+    <div class="sec">Binary Codewords</div>
+    <table class="ctbl">
+      <thead><tr><th style="width:110px">Bank</th><th>Codeword</th><th style="width:180px">Bit order</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Rs_code</strong><div class="cnote">active-low (0=IN)</div></td><td><div class="cmono" id="rc">—</div></td><td><div class="cnote">MSB=4kΩ → LSB=4.75Ω</div></td></tr>
+        <tr><td><strong>Cs_code</strong></td><td><div class="cmono" id="csc">—</div></td><td><div class="cnote">MSB=470nF → LSB=4pF</div></td></tr>
+        <tr><td><strong>Cp_code</strong></td><td><div class="cmono" id="cpc">—</div></td><td><div class="cnote">MSB=68nF → LSB=0.5pF</div></td></tr>
+      </tbody>
+    </table>
+
+    <div class="sec">SEL Line Detail</div>
+    <div class="seld">
+      <div class="selrow" style="font-weight:700;color:var(--theme-primary);font-size:10px;border-bottom:2px solid var(--color-border-tertiary)">
+        <div>Bank / Lines</div><div>SEL values (left = lowest S#) &nbsp;·&nbsp; S1A=smaller · S1B=larger</div><div style="text-align:right">Range</div>
+      </div>
+      <div class="selrow"><div class="sellbl">Cp  S1–S18</div><div class="selbw" id="cpsel"></div><div class="selrng">0.5pF → 68nF</div></div>
+      <div class="selrow"><div class="sellbl">Rs  S19–S30</div><div class="selbw" id="rssel"></div><div class="selrng">4.75Ω → 4kΩ (sing.)</div></div>
+      <div class="selrow"><div class="sellbl">Cs  S31–S48</div><div class="selbw" id="cssel"></div><div class="selrng">4pF → 470nF</div></div>
+    </div>
+
+  </div>
+  <div class="tiftr" id="footer-params">Kvco=60MHz/V · α=5 · β=3 · PM≈61.9° · S1A=smaller · S1B=larger · Rs active-low: 0=in circuit</div>
+</div>
+
+<script>
+const RB=[4000,2000,1000,500,250,127,68,33,15,8,4.75];
+const CB=[470e-9,220e-9,120e-9,68e-9,32e-9,16e-9,8e-9,4e-9,2e-9,1e-9,510e-12,240e-12,128e-12,68e-12,32e-12,16e-12,8e-12,4e-12];
+const PB=[68e-9,32e-9,16e-9,8e-9,4e-9,2e-9,1e-9,510e-12,240e-12,128e-12,68e-12,32e-12,16e-12,8e-12,4e-12,2e-12,1e-12,0.5e-12];
+const SWI=[['SW1','S1–S8','Cp: 0.5p–510pF'],['SW2','S9–S16','Cp: 240p–16nF'],['SW3','S17–S24','Cp:32n,68n + Rs:4.75–68Ω'],['SW4','S25–S32','Rs:127Ω–4kΩ + Cs:4p,8pF'],['SW5','S33–S40','Cs: 16p–2nF'],['SW6','S41–S48','Cs: 4n–470nF']];
+
+let pmMode='nc';
+
+function pmFromAB(a,b){
+  const x=a*b;
+  return (180/Math.PI)*Math.atan(x/(2*Math.sqrt(1+x)));
+}
+function abProductFromPM(pm_deg){
+  const pm=pm_deg*Math.PI/180;
+  const t=Math.tan(pm);
+  return 2*t*t+2*t*Math.sqrt(t*t+1);
+}
+function findAlphaBeta(pm_deg){
+  const ab=abProductFromPM(pm_deg);
+  if(ab<=9.0) return null; // impossible with alpha,beta>3
+  // Keep alpha=5, solve for beta; if beta<3, use balanced alpha=beta=sqrt(ab)
+  let alpha=5.0, beta=ab/alpha;
+  if(beta>=3.0) return {alpha,beta,pm:pmFromAB(alpha,beta)};
+  // balanced
+  const sq=Math.sqrt(ab);
+  if(sq>3.0) return {alpha:sq,beta:sq,pm:pmFromAB(sq,sq)};
+  return null;
+}
+
+function setPMMode(mode){
+  pmMode=mode;
+  document.getElementById('btn-nc').classList.toggle('active',mode==='nc');
+  document.getElementById('btn-pm').classList.toggle('active',mode==='pm');
+  document.getElementById('pm-controls').style.display=mode==='pm'?'block':'none';
+  document.getElementById('nc-info').style.display=mode==='nc'?'block':'none';
+  if(mode==='pm') onPMSlider();
+}
+
+function onPMSlider(){
+  const pm=parseFloat(document.getElementById('pm-slider').value);
+  document.getElementById('pm-disp').textContent=pm.toFixed(1)+'°';
+  const res=findAlphaBeta(pm);
+  const warn=document.getElementById('pm-warn');
+  if(!res){
+    warn.textContent='PM below 54.9° is not achievable with α,β > 3. Minimum is ≈55°.';
+    warn.style.display='block';
+    document.getElementById('ab-alpha').textContent='—';
+    document.getElementById('ab-beta').textContent='—';
+    document.getElementById('ab-pm').textContent='—';
+  } else {
+    warn.style.display='none';
+    document.getElementById('ab-alpha').textContent=res.alpha.toFixed(3);
+    document.getElementById('ab-beta').textContent=res.beta.toFixed(3);
+    document.getElementById('ab-pm').textContent=res.pm.toFixed(1)+'°';
+  }
+}
+
+function getAlphaBeta(){
+  if(pmMode==='nc') return {alpha:5,beta:3};
+  const pm=parseFloat(document.getElementById('pm-slider').value);
+  const res=findAlphaBeta(pm);
+  return res?{alpha:res.alpha,beta:res.beta}:{alpha:5,beta:3};
+}
+
+function fb(v,bank){let r=v,a=[];for(let b of bank){if(r>=b){a.push(1);r-=b;}else a.push(0);}return a;}
+function ps(bl,bh){let c1=bl,c2=bh;if(!c1&&!c2)return[1,1];if(c1&&!c2)return[1,0];if(!c1&&c2)return[0,0];return[0,1];}
+function ss(b){return b?[1,0]:[1,1];}
+function bsf(bo,sl=false){let rv=[...bo].reverse(),fl=[],i=0,n=rv.length;while(i<n){if(sl&&i===n-1){fl.push(...ss(rv[i]));i++;}else{fl.push(...ps(rv[i],rv[i+1]));i+=2;}}return fl;}
+function fmR(v){return v>=1000?(v/1000).toPrecision(4)+' kΩ':v.toPrecision(4)+' Ω';}
+function fmC(v){return v>=1e-6?(v*1e9).toPrecision(4)+' nF':(v*1e12).toPrecision(4)+' pF';}
+
+function calc(){
+  const err=document.getElementById('err');
+  err.style.display='none';
+  const fc=parseFloat(document.getElementById('fc_v').value)*parseFloat(document.getElementById('fc_u').value);
+  const N=parseFloat(document.getElementById('nv').value);
+  const icp=parseFloat(document.getElementById('icp_v').value)*parseFloat(document.getElementById('icp_u').value);
+  const Kvco=parseFloat(document.getElementById('kv_v').value)*parseFloat(document.getElementById('kv_u').value);
+  if(!fc||!N||!icp||!Kvco||[fc,N,icp,Kvco].some(x=>x<=0||isNaN(x))){
+    err.textContent='Please enter valid positive values for all inputs.';err.style.display='block';return;
+  }
+  const {alpha,beta}=getAlphaBeta();
+  const actualPM=pmFromAB(alpha,beta);
+
+  const Rs=(2*Math.PI*fc*N)/(icp*Kvco);
+  const Cs=alpha/(2*Math.PI*fc*Rs);
+  const Cp=Cs/(alpha*beta);
+
+  const Rr=fb(Rs,RB),Cb=fb(Cs,CB),Pb=fb(Cp,PB);
+  const Ra=Rr.map(b=>1-b);
+  const Rap=RB.reduce((s,b,i)=>s+Rr[i]*b,0);
+  const Cap=CB.reduce((s,b,i)=>s+Cb[i]*b,0);
+  const Pap=PB.reduce((s,b,i)=>s+Pb[i]*b,0);
+
+  document.getElementById('rv').textContent=fmR(Rs);
+  document.getElementById('ra').textContent='≈ '+fmR(Rap)+' (discrete)';
+  document.getElementById('csv').textContent=fmC(Cs);
+  document.getElementById('csa').textContent='≈ '+fmC(Cap)+' (discrete)';
+  document.getElementById('cpv').textContent=fmC(Cp);
+  document.getElementById('cpa').textContent='≈ '+fmC(Pap)+' (discrete)';
+  document.getElementById('rc').textContent=Rr.map(b=>1-b).join('');
+  document.getElementById('csc').textContent=Cb.join('');
+  document.getElementById('cpc').textContent=Pb.join('');
+
+  const cpf=bsf(Pb,false),rsf=bsf(Ra,true),csf=bsf(Cb,false);
+  const all=[...cpf,...rsf,...csf];
+
+  const sg=document.getElementById('swg');sg.innerHTML='';
+  for(let i=0;i<6;i++){
+    const bits=all.slice(i*8,i*8+8);
+    const [nm,rng,lbl]=SWI[i];
+    sg.innerHTML+=`<div class="sc"><div class="sh"><span class="sn">${nm}</span><span class="sr">${rng}</span></div><div class="sb"><div class="sbits">${bits.map(b=>`<div class="bit b${b}">${b}</div>`).join('')}</div><div class="slbl">${lbl}</div></div></div>`;
+  }
+  function rSel(id,fl){document.getElementById(id).innerHTML=fl.map(b=>`<div class="sbit sb${b}">${b}</div>`).join('');}
+  rSel('cpsel',cpf);rSel('rssel',rsf);rSel('cssel',csf);
+
+  const KvcoMHz=(Kvco/1e6).toPrecision(4);
+  document.getElementById('footer-params').textContent=
+    `Kvco=${KvcoMHz}MHz/V · α=${alpha.toFixed(3)} · β=${beta.toFixed(3)} · PM≈${actualPM.toFixed(1)}° · S1A=smaller · S1B=larger · Rs active-low: 0=in circuit`;
+
+  document.getElementById('res').style.display='block';
+}
+calc();
+</script>
