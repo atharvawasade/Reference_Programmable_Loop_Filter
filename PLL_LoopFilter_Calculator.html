@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLL Loop Filter Calculator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #fff;
+  color: #111;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+}
+
+/* ── TI Header ── */
+.ti-header {
+  width: 100%;
+  background: #CC0000;
+  color: #fff;
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ti-logo { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; }
+.ti-logo span { font-size: 22px; font-weight: 900; margin-right: 6px; }
+.ti-title { font-size: 16px; font-weight: 700; letter-spacing: 0.02em; }
+
+.container {
+  width: 100%;
+  max-width: 900px;
+  padding: 28px 20px 40px;
+}
+
+/* ── Input card ── */
+.input-card {
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 22px 24px 18px;
+  margin-bottom: 22px;
+  background: #fafafa;
+}
+.input-card h2 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #CC0000;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 18px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #CC0000;
+}
+.input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #555;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.field-row {
+  display: flex;
+  align-items: stretch;
+  border: 1.5px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #fff;
+}
+.field-row input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 9px 11px;
+  font-size: 15px;
+  font-family: Arial, sans-serif;
+  background: transparent;
+  color: #111;
+  min-width: 0;
+}
+.field-row select {
+  border: none;
+  border-left: 1.5px solid #ccc;
+  outline: none;
+  padding: 9px 8px;
+  font-size: 13px;
+  background: #f0f0f0;
+  color: #333;
+  font-family: Arial, sans-serif;
+  cursor: pointer;
+}
+.calc-btn {
+  display: block;
+  width: 100%;
+  margin-top: 18px;
+  padding: 12px;
+  background: #CC0000;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.calc-btn:hover { background: #aa0000; }
+
+/* ── Result sections ── */
+.results { display: none; }
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #CC0000;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 2px solid #CC0000;
+  padding-bottom: 6px;
+  margin-bottom: 14px;
+}
+
+/* Component values */
+.comp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.comp-card {
+  border: 1.5px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 14px 16px;
+  background: #fff;
+  border-top: 4px solid #CC0000;
+}
+.comp-card .sym {
+  font-size: 13px; font-weight: 700; color: #CC0000;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.comp-card .val {
+  font-size: 22px; font-weight: 700; color: #111;
+  font-family: 'Courier New', monospace;
+}
+.comp-card .approx {
+  font-size: 11px; color: #888; margin-top: 4px;
+}
+
+/* Codeword table */
+.code-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 22px;
+  font-size: 13px;
+}
+.code-table th {
+  background: #CC0000;
+  color: #fff;
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.code-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+}
+.code-table tr:nth-child(even) td { background: #fafafa; }
+.code-mono {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #111;
+}
+.code-note { font-size: 11px; color: #888; margin-top: 2px; }
+
+/* SW grid */
+.sw-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.sw-card {
+  border: 1.5px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.sw-header {
+  background: #CC0000;
+  color: #fff;
+  padding: 6px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.sw-header .sw-name { font-size: 13px; font-weight: 700; }
+.sw-header .sw-range { font-size: 10px; opacity: 0.9; }
+.sw-body { padding: 10px 12px; background: #fff; }
+.sw-bits {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.bit {
+  width: 26px; height: 26px;
+  border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; font-family: 'Courier New', monospace;
+}
+.bit-1 { background: #CC0000; color: #fff; }
+.bit-0 { background: #f0f0f0; color: #555; border: 1px solid #ccc; }
+.sw-label { font-size: 10px; color: #888; }
+
+/* SEL detail */
+.sel-detail {
+  background: #fafafa;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin-bottom: 22px;
+}
+.sel-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 200px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 12px;
+  gap: 12px;
+}
+.sel-row:last-child { border-bottom: none; }
+.sel-label { font-weight: 700; color: #555; }
+.sel-bits-wrap { display: flex; flex-wrap: wrap; gap: 3px; }
+.sel-bit {
+  width: 19px; height: 19px;
+  border-radius: 2px;
+  font-size: 10px; font-weight: 700; font-family: monospace;
+  display: flex; align-items: center; justify-content: center;
+}
+.sel-bit-1 { background: #CC0000; color: #fff; }
+.sel-bit-0 { background: #eee; color: #666; }
+.sel-range { font-size: 10px; color: #aaa; text-align: right; }
+
+/* Error */
+.error {
+  background: #fff0f0;
+  border: 1.5px solid #CC0000;
+  border-radius: 6px;
+  padding: 12px 16px;
+  color: #CC0000;
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 16px;
+  display: none;
+}
+
+/* TI footer */
+.ti-footer {
+  width: 100%;
+  background: #f5f5f5;
+  border-top: 2px solid #CC0000;
+  padding: 10px 28px;
+  font-size: 11px;
+  color: #888;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="ti-header">
+  <div class="ti-logo"><span>TI</span> TEXAS INSTRUMENTS</div>
+  <div class="ti-title">PLL Loop Filter — Switch Configuration Calculator</div>
+</div>
+
+<div class="container">
+
+  <div class="input-card">
+    <h2>Input Parameters</h2>
+    <div class="input-grid">
+      <div class="field">
+        <label>Loop Bandwidth F<sub>c</sub></label>
+        <div class="field-row">
+          <input type="number" id="fc_val" value="100" min="0.001" step="any">
+          <select id="fc_unit">
+            <option value="1e3">kHz</option>
+            <option value="1e6">MHz</option>
+            <option value="1">Hz</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Divider Ratio N</label>
+        <div class="field-row">
+          <input type="number" id="N_val" value="10" min="1" step="1">
+        </div>
+      </div>
+      <div class="field">
+        <label>Charge Pump I<sub>cp</sub></label>
+        <div class="field-row">
+          <input type="number" id="icp_val" value="1" min="0.001" step="any">
+          <select id="icp_unit">
+            <option value="1e-3">mA</option>
+            <option value="1e-6">µA</option>
+            <option value="1">A</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">Calculate Switch Settings</button>
+  </div>
+
+  <div class="error" id="error-box"></div>
+
+  <div class="results" id="results">
+
+    <!-- Component Values -->
+    <div class="section-title">Computed Component Values</div>
+    <div class="comp-grid">
+      <div class="comp-card">
+        <div class="sym">Rs — Series Resistance</div>
+        <div class="val" id="rs-val">—</div>
+        <div class="approx" id="rs-approx"></div>
+      </div>
+      <div class="comp-card">
+        <div class="sym">Cs — Series Capacitance</div>
+        <div class="val" id="cs-val">—</div>
+        <div class="approx" id="cs-approx"></div>
+      </div>
+      <div class="comp-card">
+        <div class="sym">Cp — Parallel Capacitance</div>
+        <div class="val" id="cp-val">—</div>
+        <div class="approx" id="cp-approx"></div>
+      </div>
+    </div>
+
+    <!-- Codewords -->
+    <div class="section-title">Binary Codewords</div>
+    <table class="code-table">
+      <thead>
+        <tr>
+          <th style="width:140px">Bank</th>
+          <th>Codeword</th>
+          <th style="width:220px">Bit Order</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Rs_code</strong><div class="code-note">active-low (0=IN)</div></td>
+          <td><div class="code-mono" id="rs-code">—</div></td>
+          <td><div class="code-note">MSB = 4 kΩ → LSB = 4.75 Ω</div></td>
+        </tr>
+        <tr>
+          <td><strong>Cs_code</strong></td>
+          <td><div class="code-mono" id="cs-code">—</div></td>
+          <td><div class="code-note">MSB = 470 nF → LSB = 4 pF</div></td>
+        </tr>
+        <tr>
+          <td><strong>Cp_code</strong></td>
+          <td><div class="code-mono" id="cp-code">—</div></td>
+          <td><div class="code-note">MSB = 68 nF → LSB = 0.5 pF</div></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- DIP Switches -->
+    <div class="section-title">DIP Switch Settings</div>
+    <div class="sw-grid" id="sw-grid"></div>
+
+    <!-- SEL Line Detail -->
+    <div class="section-title">SEL Line Detail</div>
+    <div class="sel-detail">
+      <div class="sel-row" style="font-weight:700; color:#555; font-size:11px; border-bottom:2px solid #CC0000;">
+        <div>Bank / Lines</div><div>SEL values (S-line order, left=lowest S)</div><div style="text-align:right">S1A=smaller / S1B=larger</div>
+      </div>
+      <div class="sel-row">
+        <div class="sel-label">Cp  S1–S18</div>
+        <div class="sel-bits-wrap" id="cp-sel"></div>
+        <div class="sel-range">0.5 pF → 68 nF</div>
+      </div>
+      <div class="sel-row">
+        <div class="sel-label">Rs  S19–S30</div>
+        <div class="sel-bits-wrap" id="rs-sel"></div>
+        <div class="sel-range">4.75 Ω → 4 kΩ (sing.)</div>
+      </div>
+      <div class="sel-row">
+        <div class="sel-label">Cs  S31–S48</div>
+        <div class="sel-bits-wrap" id="cs-sel"></div>
+        <div class="sel-range">4 pF → 470 nF</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="ti-footer">
+  Kvco = 60 MHz/V &nbsp;|&nbsp; α = 5 &nbsp;|&nbsp; β = 3 &nbsp;|&nbsp;
+  S1A = smaller component &nbsp;|&nbsp; S1B = larger component &nbsp;|&nbsp;
+  Rs active-low: 0 = in circuit
+</div>
+
+<script>
+const KVCO=60e6, ALPHA=5, BETA=3;
+
+const RS_BANK=[4000,2000,1000,500,250,127,68,33,15,8,4.75];
+const CS_BANK=[470e-9,220e-9,120e-9,68e-9,32e-9,16e-9,8e-9,4e-9,2e-9,1e-9,
+               510e-12,240e-12,128e-12,68e-12,32e-12,16e-12,8e-12,4e-12];
+const CP_BANK=[68e-9,32e-9,16e-9,8e-9,4e-9,2e-9,1e-9,510e-12,
+               240e-12,128e-12,68e-12,32e-12,16e-12,8e-12,4e-12,2e-12,1e-12,0.5e-12];
+
+function findBits(value, bank){
+  let rem=value, bits=[];
+  for(let b of bank){ if(rem>=b){bits.push(1);rem-=b;}else bits.push(0); }
+  return bits;
+}
+
+function pairToSel(b_low, b_high){
+  // S1A = smaller/lower weight (c1), S1B = larger/higher weight (c2)
+  let c1=b_low, c2=b_high;
+  if(c1===0&&c2===0) return [1,1];   // High-Z
+  if(c1===1&&c2===0) return [1,0];   // S1A — smaller only
+  if(c1===0&&c2===1) return [0,0];   // S1B — larger only
+  return [0,1];                       // S1C — both
+}
+function singularToSel(b){ return b===1?[1,0]:[1,1]; }
+
+function bankToSelFlat(bitsOrig, singularLast=false){
+  let rev=[...bitsOrig].reverse(), flat=[], i=0, n=rev.length;
+  while(i<n){
+    if(singularLast && i===n-1){
+      flat.push(...singularToSel(rev[i])); i++;
+    } else {
+      flat.push(...pairToSel(rev[i],rev[i+1])); i+=2;
+    }
+  }
+  return flat;
+}
+
+function fmtVal(v){
+  if(v===0) return '0';
+  const abs=Math.abs(v);
+  if(abs>=1e6)  return (v/1e6).toPrecision(4)+' MΩ / MF';
+  if(abs>=1e3)  return (v/1e3).toPrecision(4)+' kΩ';
+  if(abs>=1)    return v.toPrecision(4)+' Ω';
+  if(abs>=1e-6) return (v*1e9).toPrecision(4)+' nF';
+  if(abs>=1e-9) return (v*1e9).toPrecision(4)+' nF';
+  if(abs>=1e-12)return (v*1e12).toPrecision(4)+' pF';
+  return v.toExponential(3);
+}
+function fmtR(v){
+  if(v>=1000) return (v/1000).toPrecision(4)+' kΩ';
+  return v.toPrecision(4)+' Ω';
+}
+function fmtC(v){
+  if(v>=1e-6)  return (v*1e9).toPrecision(4)+' nF';
+  if(v>=1e-9)  return (v*1e9).toPrecision(4)+' nF';
+  if(v>=1e-12) return (v*1e12).toPrecision(4)+' pF';
+  return (v*1e12).toPrecision(4)+' pF';
+}
+
+const SW_INFO=[
+  ['SW1','S1–S8','Cp: 0.5 pF → 510 pF'],
+  ['SW2','S9–S16','Cp: 240 pF → 16 nF'],
+  ['SW3','S17–S24','Cp: 32 nF, 68 nF  +  Rs: 4.75–68 Ω'],
+  ['SW4','S25–S32','Rs: 127 Ω → 4 kΩ  +  Cs: 4 pF, 8 pF'],
+  ['SW5','S33–S40','Cs: 16 pF → 2 nF'],
+  ['SW6','S41–S48','Cs: 4 nF → 470 nF'],
+];
+
+function calculate(){
+  const errBox=document.getElementById('error-box');
+  errBox.style.display='none';
+
+  const fc = parseFloat(document.getElementById('fc_val').value)
+           * parseFloat(document.getElementById('fc_unit').value);
+  const N  = parseFloat(document.getElementById('N_val').value);
+  const icp= parseFloat(document.getElementById('icp_val').value)
+           * parseFloat(document.getElementById('icp_unit').value);
+
+  if(!fc||!N||!icp||fc<=0||N<=0||icp<=0){
+    errBox.textContent='Please enter valid positive values for all inputs.';
+    errBox.style.display='block'; return;
+  }
+
+  const Rs = (2*Math.PI*fc*N)/(icp*KVCO);
+  const Cs = ALPHA/(2*Math.PI*fc*Rs);
+  const Cp = Cs/(ALPHA*BETA);
+
+  const Rs_raw  = findBits(Rs, RS_BANK);
+  const Cs_bits = findBits(Cs, CS_BANK);
+  const Cp_bits = findBits(Cp, CP_BANK);
+  const Rs_act  = Rs_raw.map(b=>1-b);
+
+  const Rs_code = Rs_raw.map(b=>1-b).join('');
+  const Cs_code = Cs_bits.join('');
+  const Cp_code = Cp_bits.join('');
+
+  const Rs_ap = RS_BANK.reduce((s,b,i)=>s+Rs_raw[i]*b,0);
+  const Cs_ap = CS_BANK.reduce((s,b,i)=>s+Cs_bits[i]*b,0);
+  const Cp_ap = CP_BANK.reduce((s,b,i)=>s+Cp_bits[i]*b,0);
+
+  const cp_flat = bankToSelFlat(Cp_bits, false);
+  const rs_flat = bankToSelFlat(Rs_act,  true);
+  const cs_flat = bankToSelFlat(Cs_bits, false);
+  const all_sel = [...cp_flat,...rs_flat,...cs_flat];
+
+  // Display component values
+  document.getElementById('rs-val').textContent=fmtR(Rs);
+  document.getElementById('rs-approx').textContent='≈ '+fmtR(Rs_ap)+' (discrete)';
+  document.getElementById('cs-val').textContent=fmtC(Cs);
+  document.getElementById('cs-approx').textContent='≈ '+fmtC(Cs_ap)+' (discrete)';
+  document.getElementById('cp-val').textContent=fmtC(Cp);
+  document.getElementById('cp-approx').textContent='≈ '+fmtC(Cp_ap)+' (discrete)';
+
+  // Codewords
+  document.getElementById('rs-code').textContent=Rs_code;
+  document.getElementById('cs-code').textContent=Cs_code;
+  document.getElementById('cp-code').textContent=Cp_code;
+
+  // DIP switches
+  const swGrid=document.getElementById('sw-grid');
+  swGrid.innerHTML='';
+  for(let i=0;i<6;i++){
+    const bits=all_sel.slice(i*8,i*8+8);
+    const [name,range,label]=SW_INFO[i];
+    const bitsHtml=bits.map(b=>`<div class="bit bit-${b}">${b}</div>`).join('');
+    swGrid.innerHTML+=`
+      <div class="sw-card">
+        <div class="sw-header">
+          <span class="sw-name">${name}</span>
+          <span class="sw-range">${range}</span>
+        </div>
+        <div class="sw-body">
+          <div class="sw-bits">${bitsHtml}</div>
+          <div class="sw-label">${label}</div>
+        </div>
+      </div>`;
+  }
+
+  // SEL detail
+  function renderSel(containerId, flat){
+    const el=document.getElementById(containerId);
+    el.innerHTML=flat.map(b=>`<div class="sel-bit sel-bit-${b}">${b}</div>`).join('');
+  }
+  renderSel('cp-sel',cp_flat);
+  renderSel('rs-sel',rs_flat);
+  renderSel('cs-sel',cs_flat);
+
+  document.getElementById('results').style.display='block';
+}
+
+// Auto-calculate on load with default values
+window.onload=()=>calculate();
+</script>
+</body>
+</html>
